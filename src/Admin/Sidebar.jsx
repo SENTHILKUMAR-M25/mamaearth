@@ -18,15 +18,21 @@ const Sidebar = () => {
       icon: <LayoutDashboard size={18} />,
       path: "/admin",
     },
-    {
-      name: "Products",
-      icon: <Package size={18} />,
-      path: "/admin/products",
-    },
+   
     {
       name: "Categories",
       icon: <Layers size={18} />,
       path: "/admin/categories",
+    },
+    {
+      name: "SubCategories",
+      icon: <Layers size={18} />,
+      path: "/admin/subcategories",
+    },
+     {
+      name: "Products",
+      icon: <Package size={18} />,
+      path: "/admin/products",
     },
   ];
 

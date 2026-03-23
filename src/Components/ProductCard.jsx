@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 const API = "http://localhost:5000/api/products";
 
@@ -41,7 +42,25 @@ const ProductCard = ({ selectedCategory }) => {
       </div>
     );
   }
+const handleAddToCart = async (productId) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    toast.error("Please login to add products to cart");
+    return;
+  }
 
+  try {
+    await axios.post(
+      "http://localhost:5000/api/cart/add",
+      { productId, quantity: 1 },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    toast.success("Added to cart");
+  } catch (err) {
+    console.error(err);
+    toast.error("Failed to add to cart");
+  }
+};
   return (
     <div className="relative px-4 py-6">
 
@@ -79,7 +98,7 @@ const ProductCard = ({ selectedCategory }) => {
           return (
             <div
               key={product._id}
-              className=" min-w-[280px] bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col relative group"
+              className=" max-w-[280px] bg-white border border-gray-200 rounded-xl overflow-hidden flex flex-col relative group"
             >
               {/* Label */}
               {product.label && (
@@ -156,7 +175,7 @@ const ProductCard = ({ selectedCategory }) => {
 
               {/* Add to Cart */}
               <button
-                onClick={() => alert("Added to cart")}
+                onClick={() => handleAddToCart(product._id)}
                 className="w-full bg-[#00B5EF] hover:bg-[#0094C4] text-white py-4 text-[16px] font-black uppercase tracking-widest transition-colors"
               >
                 Add to Cart
