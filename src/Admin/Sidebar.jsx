@@ -6,6 +6,7 @@ import {
   Layers,
   Menu,
   X,
+  Users,
 } from "lucide-react";
 
 const Sidebar = () => {
@@ -34,13 +35,23 @@ const Sidebar = () => {
       icon: <Package size={18} />,
       path: "/admin/products",
     },
+     {
+      name: "Users",
+      icon: <Users size={18} />,
+      path: "/admin/users",
+    },
+     {
+      name: "Orders",
+      icon: <Users size={18} />,
+      path: "/admin/order",
+    },
   ];
 
   return (
     <>
       {/* Mobile Toggle Button */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-50 bg-gray-900 text-white p-2 rounded"
+        className="lg:hidden  fixed top-4 left-4 z-50 bg-gray-900 text-white p-2 rounded"
         onClick={() => setOpen(!open)}
       >
         {open ? <X size={18} /> : <Menu size={18} />}
@@ -48,7 +59,7 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed lg:static top-0 left-0 h-full bg-gray-900 text-white transition-all duration-300 z-40
+        className={`fixed lg:static top-0 left-0 h-screen bg-gray-900 text-white transition-all duration-300 z-40
         ${open ? "w-64" : "w-0 lg:w-20 overflow-hidden"}`}
       >
         {/* Logo */}

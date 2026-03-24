@@ -61,13 +61,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 // Pages
-import HomePage from "./Pages/Home";
-import LoginPage from "./Pages/Login";
-import RegisterPage from "./Pages/Register";
+import HomePage from "./Components/Home";
+import LoginPage from "./auth/Login";
+import RegisterPage from "./auth/Register";
 import CategoryPage from "./Pages/CategoryPage";
 import CartPage from "./Pages/CartPage";
 import CheckoutPage from "./Pages/CheckoutPage";
-// Admin
+// // Admin
 import AdminLayout from "./Admin/AdminLayout";
 import Dashboard from "./Admin/Dashboard";
 import ProductControl from "./Admin/ProductControl";
@@ -77,6 +77,9 @@ import SubcategoryControl from "./Admin/Subcategory";
 // Context
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
+import UserTable from "./Admin/UserTable";
+import OrderTable from "./Admin/Order";
+
 
 
 function App() {
@@ -98,6 +101,8 @@ function App() {
               <Route path="products" element={<ProductControl />} />
               <Route path="categories" element={<CategoryControl />} />
               <Route path="subcategories" element={<SubcategoryControl />} />
+              <Route path="users" element={<UserTable />} />
+              <Route path="order" element={<OrderTable />} />
             </Route>
           </Routes>
         </BrowserRouter>

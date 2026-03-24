@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const CATEGORY_API = "http://localhost:5000/api/categories";
 const SUBCATEGORY_API = "http://localhost:5000/api/subcategories";
@@ -29,6 +30,7 @@ const SubcategoryControl = () => {
       setSubcategories(subRes.data);
     } catch (err) {
       console.error(err);
+      toast.error("Failed to fetch data");
     }
   };
 
@@ -43,11 +45,10 @@ const SubcategoryControl = () => {
     setForm({ ...form, image: file, preview: URL.createObjectURL(file) });
   };
 
-
   const handleSubmit = async () => {
-    if (!form.name || !form.category) return alert("⚠️ Please fill all fields");
-
+    if (!form.name || !form.category) return toast.error("Please fill all fields");
     setLoading(true);
+
     try {
       const formData = new FormData();
       formData.append("category", form.category);
@@ -57,22 +58,22 @@ const SubcategoryControl = () => {
 
       if (editId) {
         await axios.put(`${SUBCATEGORY_API}/${editId}`, formData);
-        alert("✅ Subcategory updated successfully!");
+        toast.success("Subcategory updated successfully!");
       } else {
         await axios.post(SUBCATEGORY_API, formData);
-        alert("✅ Subcategory added successfully!");
+        toast.success("Subcategory created successfully!");
       }
 
       fetchData();
       closeModal();
     } catch (err) {
       console.error(err);
-      alert("❌ Operation failed! Please try again.");
+      toast.error("Operation failed! Please try again.");
     } finally {
       setLoading(false);
     }
   };
- 
+
   const handleEdit = (sub) => {
     setForm({
       category: sub.category._id,
@@ -83,19 +84,17 @@ const SubcategoryControl = () => {
     });
     setEditId(sub._id);
     setShowModal(true);
-    alert(`✏️ Editing subcategory: ${sub.name}`);
   };
 
-
   const handleDelete = async (id, name) => {
-    if (window.confirm(`⚠️ Are you sure you want to delete "${name}"?`)) {
+    if (window.confirm(`Are you sure you want to delete "${name}"?`)) {
       try {
         await axios.delete(`${SUBCATEGORY_API}/${id}`);
         fetchData();
-        alert("🗑 Subcategory deleted successfully!");
+        toast.success("Subcategory deleted successfully!");
       } catch (err) {
         console.error(err);
-        alert("❌ Failed to delete subcategory!");
+        toast.error("Failed to delete subcategory!");
       }
     }
   };
@@ -107,82 +106,87 @@ const SubcategoryControl = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">🗂 Subcategory Control</h1>
-        <button
-          onClick={() => setShowModal(true)}
-          className="bg-green-600 text-white px-5 py-2 rounded-lg shadow hover:bg-green-700"
-        >
-          + Add Subcategory
-        </button>
-      </div>
+    <div className="p-6 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 min-h-screen">
+      <div className="max-w-7xl mx-auto bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl shadow-xl p-6">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-white">🗂 Subcategory Control</h1>
+          <button
+            onClick={() => setShowModal(true)}
+            className="bg-green-600 text-white px-5 py-2 rounded-lg shadow hover:bg-green-700 transition"
+          >
+            + Add Subcategory
+          </button>
+        </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl shadow overflow-x-auto">
-        <table className="w-full text-left">
-          <thead className="bg-gray-200 text-gray-700">
-            <tr>
-              <th className="p-4">S.No</th>
-              <th>Image</th>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Description</th>
-              <th className="text-center">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {subcategories.length === 0 ? (
+        {/* Table */}
+        <div className="overflow-x-auto rounded-xl shadow">
+          <table className="w-full text-left text-white">
+            <thead className="bg-gray-800 text-gray-300">
               <tr>
-                <td colSpan="6" className="py-10 text-center text-gray-500">
-                  No subcategories added yet
-                </td>
+                <th className="p-4">S.No</th>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th className="text-center p-3">Action</th>
               </tr>
-            ) : (
-              subcategories.map((s, i) => (
-                <tr key={s._id} className="border-t hover:bg-gray-50 transition">
-                  <td className="p-4">{i + 1}</td>
-                  <td className="py-2">
-                    {s.image ? (
-                      <img
-                        src={`http://localhost:5000/uploads/${s.image}`}
-                        className="h-12 w-12 object-cover rounded-md border"
-                        alt={s.name}
-                      />
-                    ) : (
-                      <div className="h-12 w-12 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-400">
-                        No Image
-                      </div>
-                    )}
-                  </td>
-                  <td className="font-semibold text-gray-700">{s.name}</td>
-                  <td className="text-gray-600">{s.category?.name}</td>
-                  <td className="text-gray-600 text-sm max-w-xs truncate">{s.disc}</td>
-                  <td className="text-center space-x-2">
-                    <button
-                      onClick={() => handleEdit(s)}
-                      className="text-blue-600 hover:text-blue-800 font-medium"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(s._id)}
-                      className="text-red-600 hover:text-red-800 font-medium"
-                    >
-                      Delete
-                    </button>
+            </thead>
+            <tbody>
+              {subcategories.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="py-10 text-center text-gray-400">
+                    No subcategories added yet
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                subcategories.map((s, i) => (
+                  <tr
+                    key={s._id}
+                    className="border-t border-gray-700 hover:bg-white/10 transition"
+                  >
+                    <td className="p-4">{i + 1}</td>
+                    <td className="py-2">
+                      {s.image ? (
+                        <img
+                          src={`http://localhost:5000/uploads/${s.image}`}
+                          className="h-12 w-12 object-cover rounded-md border"
+                          alt={s.name}
+                        />
+                      ) : (
+                        <div className="h-12 w-12 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-400">
+                          No Image
+                        </div>
+                      )}
+                    </td>
+                    <td className="font-semibold text-gray-300">{s.name}</td>
+                    <td className="text-gray-400">{s.category?.name}</td>
+                    <td className="text-gray-300 text-sm max-w-xs truncate">{s.disc}</td>
+                    <td className="text-center space-x-2">
+                      <button
+                        onClick={() => handleEdit(s)}
+                        className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition font-medium"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(s._id, s.name)}
+                        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition font-medium"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Modal */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-          <div className="bg-white p-6 rounded-3xl w-full max-w-md shadow-2xl">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-6">
             <h2 className="text-xl font-bold mb-6 text-gray-800">
               {editId ? "Edit Subcategory" : "Add New Subcategory"}
             </h2>
@@ -197,9 +201,7 @@ const SubcategoryControl = () => {
                 >
                   <option value="">Select Category</option>
                   {categories.map((c) => (
-                    <option key={c._id} value={c._id}>
-                      {c.name}
-                    </option>
+                    <option key={c._id} value={c._id}>{c.name}</option>
                   ))}
                 </select>
               </div>

@@ -10,7 +10,7 @@ const AdminLayout = () => {
       <Sidebar />
 
       {/* Content */}
-      <div className="flex-1 p-6 lg:ml-0">
+      <div className="flex-1 bg-linear-to-br from-black via-gray-900 to-gray-800 lg:ml-0">
         <Outlet />
       </div>
     </div>
