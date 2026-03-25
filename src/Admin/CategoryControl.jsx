@@ -17,7 +17,6 @@ const CategoryControl = () => {
     preview: "",
   });
 
-  // Fetch categories
   const fetchCategories = async () => {
     try {
       const res = await axios.get(API);
@@ -32,16 +31,15 @@ const CategoryControl = () => {
     fetchCategories();
   }, []);
 
-  // Image preview
   const handleImage = (e) => {
     const file = e.target.files[0];
     if (!file) return;
     setForm({ ...form, image: file, preview: URL.createObjectURL(file) });
   };
 
-  // Submit form
   const handleSubmit = async () => {
-    if (!form.name || !form.disc) return toast.error("Please fill all fields!");
+    if (!form.name || !form.disc)
+      return toast.error("Please fill all fields!");
     setLoading(true);
     try {
       const formData = new FormData();
@@ -67,7 +65,6 @@ const CategoryControl = () => {
     }
   };
 
-  // Edit
   const handleEdit = (cat) => {
     setForm({
       name: cat.name,
@@ -79,7 +76,6 @@ const CategoryControl = () => {
     setShowModal(true);
   };
 
-  // Delete
   const handleDelete = async (id, name) => {
     if (window.confirm(`Are you sure you want to delete "${name}"?`)) {
       try {
@@ -93,7 +89,6 @@ const CategoryControl = () => {
     }
   };
 
-  // Close modal
   const closeModal = () => {
     setEditId(null);
     setForm({ name: "", image: null, disc: "", preview: "" });
@@ -101,21 +96,23 @@ const CategoryControl = () => {
   };
 
   return (
-    <div className="p-6 bg-gradient-to-br from-black via-gray-900 to-gray-800 min-h-screen">
-      <div className="max-w-7xl mx-auto bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl shadow-xl p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-white">🗂 Category Control</h1>
+    <div className="p-4 md:p-6 bg-gradient-to-br from-black via-gray-900 to-gray-800 min-h-screen">
+      <div className="max-w-7xl mx-auto bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl shadow-xl p-6">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+          <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+            🗂 Category Control
+          </h1>
           <button
             onClick={() => setShowModal(true)}
-            className="bg-green-600 text-white px-5 py-2 rounded-lg shadow hover:bg-green-700 transition"
+            className="bg-green-600 text-white px-5 py-2 rounded-lg shadow hover:bg-green-700 transition w-full md:w-auto"
           >
             + Add Category
           </button>
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto rounded-xl shadow">
-          <table className="w-full text-left text-white">
+        <div className="overflow-x-auto rounded-xl shadow mt-4">
+          <table className="w-full text-left text-white min-w-[600px] md:min-w-full">
             <thead>
               <tr className="border-b border-gray-600 text-gray-300">
                 <th className="p-4">S.No</th>
@@ -136,7 +133,7 @@ const CategoryControl = () => {
                 categories.map((c, i) => (
                   <tr
                     key={c._id}
-                    className="border-b border-gray-700 hover:bg-white/10 transition"
+                    className="border-b border-gray-700 hover:bg-white/10 transition-all duration-200"
                   >
                     <td className="p-4">{i + 1}</td>
                     <td className="py-2">
@@ -147,7 +144,7 @@ const CategoryControl = () => {
                           alt={c.name}
                         />
                       ) : (
-                        <div className="h-12 w-12 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-400">
+                        <div className="h-12 w-12 bg-gray-700 rounded flex items-center justify-center text-xs text-gray-400">
                           No Image
                         </div>
                       )}
@@ -160,7 +157,7 @@ const CategoryControl = () => {
                           : c.disc}
                       </span>
                     </td>
-                    <td className="text-center space-x-2">
+                    <td className="text-center space-x-2 flex justify-center">
                       <button
                         onClick={() => handleEdit(c)}
                         className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition font-medium"
@@ -184,24 +181,26 @@ const CategoryControl = () => {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-lg relative">
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+          <div className="bg-gray-900 rounded-3xl shadow-xl p-6 w-full max-w-lg relative text-white">
             <h2 className="text-xl font-bold mb-4">
               {editId ? "Edit Category" : "Add New Category"}
             </h2>
 
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <input
                 type="text"
                 placeholder="Category Name"
                 value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="p-3 rounded border border-gray-300 w-full"
+                onChange={(e) =>
+                  setForm({ ...form, name: e.target.value })
+                }
+                className="p-3 rounded border border-gray-700 bg-gray-800 w-full placeholder-gray-400 text-white focus:ring-2 focus:ring-blue-500 transition"
               />
               <input
                 type="file"
                 onChange={handleImage}
-                className="p-2 rounded border border-gray-300 w-full text-sm text-gray-600"
+                className="p-2 rounded border border-gray-700 w-full text-sm text-gray-400 bg-gray-800 placeholder-gray-500"
               />
               {form.preview && (
                 <img
@@ -214,21 +213,21 @@ const CategoryControl = () => {
                 placeholder="Description"
                 value={form.disc}
                 onChange={(e) => setForm({ ...form, disc: e.target.value })}
-                className="p-3 rounded border border-gray-300 w-full md:col-span-2"
+                className="p-3 rounded border border-gray-700 bg-gray-800 w-full md:col-span-2 placeholder-gray-400 text-white focus:ring-2 focus:ring-blue-500 transition"
               />
             </div>
 
             <div className="flex justify-end mt-4 gap-4">
               <button
                 onClick={closeModal}
-                className="px-5 py-2 rounded bg-gray-500 text-white hover:bg-gray-600 transition"
+                className="px-5 py-2 rounded bg-gray-600 hover:bg-gray-700 transition"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="px-5 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition"
+                className="px-5 py-2 rounded bg-blue-600 hover:bg-blue-700 transition disabled:opacity-50"
               >
                 {loading ? "Saving..." : editId ? "Update" : "Add"}
               </button>

@@ -32,27 +32,22 @@ const Dashboard = () => {
           axios.get("http://localhost:5000/api/orders"),
         ]);
 
-        // ✅ Counts
         setCounts({
           products: productsRes.data.length || 0,
           categories: categoriesRes.data.length || 0,
           orders: ordersRes.data.length || 0,
         });
 
-        // ✅ Group & SORT orders by date
+        // Group orders by date
         const grouped = {};
-
         ordersRes.data.forEach((order) => {
           const date = new Date(order.createdAt).toLocaleDateString();
           grouped[date] = (grouped[date] || 0) + 1;
         });
 
         const formatted = Object.keys(grouped)
-          .map((date) => ({
-            date,
-            orders: grouped[date],
-          }))
-          .sort((a, b) => new Date(a.date) - new Date(b.date)); // 🔥 FIX
+          .map((date) => ({ date, orders: grouped[date] }))
+          .sort((a, b) => new Date(a.date) - new Date(b.date));
 
         setOrderData(formatted);
       } catch (err) {
@@ -70,30 +65,35 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="p-6 bg-gray-50 h-screen">
-      <h1 className="text-2xl font-bold mb-6">Dashboard Overview</h1>
+    <div className="p-4  w-full md:p-6 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 min-h-screen text-white">
+      <h1 className="text-3xl font-bold mb-8">📊 Dashboard Overview</h1>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
         {statData.map((stat, index) => (
-          <div key={index} className="bg-white p-6 rounded-xl shadow-sm border">
-            <h2 className="text-gray-500 text-sm uppercase">{stat.name}</h2>
-            <p className="text-3xl font-bold mt-2" style={{ color: stat.color }}>
+          <div
+            key={index}
+            className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all"
+          >
+            <h2 className="uppercase text-gray-300 text-sm">{stat.name}</h2>
+            <p
+              className="text-3xl font-bold mt-2"
+              style={{ color: stat.color }}
+            >
               {stat.value}
             </p>
           </div>
         ))}
       </div>
 
-      {/* Charts Section (FIXED) */}
+      {/* Charts Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-
         {/* Pie Chart */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border">
+        <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all">
           <h2 className="text-lg font-semibold mb-4">
             Distribution Breakdown
           </h2>
-          <div className="h-64">
+          <div className="h-64 md:h-80">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -101,42 +101,53 @@ const Dashboard = () => {
                   dataKey="value"
                   innerRadius={60}
                   outerRadius={80}
+                  paddingAngle={3}
+                  label={({ name, percent }) =>
+                    `${name}: ${(percent * 100).toFixed(0)}%`
+                  }
+                  labelStyle={{ fill: "#fff", fontSize: 12 }}
                 >
                   {statData.map((entry, index) => (
                     <Cell key={index} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip />
-                <Legend />
+                <Tooltip
+                  contentStyle={{ backgroundColor: "#1F2937", borderRadius: 8 }}
+                />
+                <Legend
+                  wrapperStyle={{ color: "#e5e7eb" }}
+                  layout="horizontal"
+                  verticalAlign="bottom"
+                  align="center"
+                />
               </PieChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Orders Line Chart */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border">
-          <h2 className="text-lg font-semibold mb-4">
-            Orders Analytics 📈
-          </h2>
-
-          <div className="h-64">
+        <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl shadow-lg hover:shadow-2xl transition-all">
+          <h2 className="text-lg font-semibold mb-4">Orders Analytics 📈</h2>
+          <div className="h-64 md:h-80">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={orderData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" />
-                <YAxis />
-                <Tooltip />
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                <XAxis dataKey="date" tick={{ fill: "#d1d5db" }} />
+                <YAxis tick={{ fill: "#d1d5db" }} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: "#1F2937", borderRadius: 8 }}
+                />
                 <Line
                   type="monotone"
                   dataKey="orders"
                   stroke="#6366F1"
                   strokeWidth={3}
+                  activeDot={{ r: 6 }}
                 />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
-
       </div>
     </div>
   );

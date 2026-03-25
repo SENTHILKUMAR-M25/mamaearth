@@ -22,7 +22,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <div className="relative flex h-[70vh] flex-col lg:flex-row items-center justify-between px-6 py-12 overflow-hidden">
+    <div className="relative flex h-[80vh] top-10 flex-col lg:flex-row items-center justify-between px-6 py-2 overflow-hidden">
       
       {/* Background Carousel */}
       <AnimatePresence>
@@ -32,7 +32,7 @@ const HeroSection = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 1 }}
           transition={{ duration: 1 }}
-          className="absolute inset-0 z-0 bg-cover bg-center"
+          className="absolute inset-0 z-0 bg-cover pt-7 bg-center"
           style={{ backgroundImage: `url(${backgroundImages[currentBg]})` }}
         ></motion.div>
       </AnimatePresence>  

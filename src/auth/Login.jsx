@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import { toast } from "react-hot-toast";
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
@@ -9,27 +9,43 @@ const Login = () => {
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        formData
-      );
-      localStorage.setItem("token", res.data.token);
-      alert("Login Successful");
-      navigate("/");
-    } catch (err) {
-      alert(err.response?.data?.msg || "Login failed");
-    }
-  };
+  const getSessionId = () => {
+  let sessionId = localStorage.getItem("sessionId");
+  return sessionId;
+};
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const sessionId = getSessionId(); // 🔥 important
+
+    const res = await axios.post(
+      "http://localhost:5000/api/auth/login",
+      {
+        ...formData,
+        sessionId, // ✅ send sessionId
+      }
+    );
+
+    localStorage.setItem("token", res.data.token);
+
+   alert("Login Successful");
+
+    navigate("/cart");
+
+  } catch (err) {
+    alert(err.response?.data?.msg || "Login failed");
+  }
+};
+
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-gray-800">
-      
+    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-black via-gray-900 to-gray-800">
+
       {/* Card */}
       <div className="w-full max-w-md p-8 rounded-2xl backdrop-blur-lg bg-white/10 border border-white/20 shadow-2xl">
-        
+
         {/* Title */}
         <h2 className="text-3xl font-bold text-white text-center mb-6">
           Welcome Back 👋

@@ -75,7 +75,7 @@ const CheckoutPage = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      toast.success("Order placed successfully 🎉");
+      alert("Order placed successfully 🎉");
 
       setForm({ name: "", phone: "", email: "", address: "", pincode: "" });
       setCartItems([]);

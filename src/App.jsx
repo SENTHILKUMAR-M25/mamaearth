@@ -59,6 +59,7 @@
 
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 
 // Pages
 import HomePage from "./Components/Home";
@@ -79,10 +80,22 @@ import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 import UserTable from "./Admin/UserTable";
 import OrderTable from "./Admin/Order";
+import { useEffect } from "react";
 
 
 
 function App() {
+ 
+  useEffect(() => {
+    let sessionId = localStorage.getItem("sessionId");
+
+    if (!sessionId) {
+      sessionId = uuidv4();
+      localStorage.setItem("sessionId", sessionId);
+    }
+  }, []);
+
+
   return (
     <AuthProvider>
       <CartProvider>
